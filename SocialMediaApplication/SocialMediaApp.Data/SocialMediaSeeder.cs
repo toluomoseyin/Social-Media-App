@@ -33,7 +33,6 @@ namespace SocialMediaApp.Data
            
 
         }
-
         private static async void SeedAppUser(UserManager<AppUser> userManager)
         {
             if (!userManager.Users.Any())
@@ -65,11 +64,9 @@ namespace SocialMediaApp.Data
                    
                    
                 }
-            }
-           
+            }           
 
         }
-
         private static async void SeedRole(RoleManager<IdentityRole> roleManager)
         {
             var roles = new string[] { "Admin", "Regular" };
@@ -85,10 +82,5 @@ namespace SocialMediaApp.Data
             }
         }
 
-        private static List<T> GetSampleData<T>(string location)
-        {
-            var output = JsonSerializer.Deserialize<List<T>>(location, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return output;
-        }
     }
 }
