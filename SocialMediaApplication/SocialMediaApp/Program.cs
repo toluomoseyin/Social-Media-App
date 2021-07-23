@@ -2,10 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using NLog.Extensions.Logging;
 
 namespace SocialMediaApp
 {
@@ -20,7 +17,16 @@ namespace SocialMediaApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureLogging((hostingContext, logging) =>
+                    {
+                        logging.AddConfiguration(hostingContext.Configuration.GetSection("logging"));
+                        logging.AddConsole();// Important for development
+                        logging.AddDebug();
+        
+                        logging.AddNLog();
+                    });
+
+                   webBuilder.UseStartup<Startup>();
                 });
     }
 }

@@ -36,7 +36,22 @@ namespace SocialMediaApp
 
                 }
                ).AddEntityFrameworkStores<SocialMediaDbContext>().AddDefaultTokenProviders();
-
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration.GetSection("JWTConfigurations:SecretKey").Value)),
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration.GetSection("JWTConfigurations:Issuer").Value,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration.GetSection("JWTConfigurations:Audience").Value
+                };
+            })
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +59,8 @@ namespace SocialMediaApp
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
+               
             }
             else
             {

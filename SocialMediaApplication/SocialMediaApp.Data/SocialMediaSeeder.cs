@@ -22,18 +22,20 @@ namespace SocialMediaApp.Data
         public static async Task SeedDatabase(IApplicationBuilder app)
         {
            
+           
             var userManager = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<UserManager<AppUser>>();
             var roleManager = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var dbContext = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<SocialMediaDbContext>();
+            
 
-
-            SeedRole(roleManager);
-            SeedAppUser(userManager);
+            dbContext.Database.EnsureCreated();
+            await SeedRole(roleManager);
+           await SeedAppUser(userManager);
            
            
 
         }
-        private static async void SeedAppUser(UserManager<AppUser> userManager)
+        private static async Task SeedAppUser(UserManager<AppUser> userManager)
         {
             if (!userManager.Users.Any())
             {
@@ -49,6 +51,7 @@ namespace SocialMediaApp.Data
                         if (result1.Succeeded)
                         {
                             await userManager.AddToRoleAsync(appUser, "Admin");
+                            count++;
                         }
                     }
                     else
@@ -67,14 +70,14 @@ namespace SocialMediaApp.Data
             }           
 
         }
-        private static async void SeedRole(RoleManager<IdentityRole> roleManager)
+        private static async Task SeedRole(RoleManager<IdentityRole> roleManager)
         {
             var roles = new string[] { "Admin", "Regular" };
             if (!roleManager.Roles.Any())
             {
                 foreach (var role in roles)
                 {
-                    if (!roleManager.RoleExistsAsync(role).Result)
+                    if (!await roleManager.RoleExistsAsync(role))
                     {
                         await roleManager.CreateAsync(new IdentityRole(role));
                     }
