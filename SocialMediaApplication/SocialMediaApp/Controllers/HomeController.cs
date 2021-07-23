@@ -20,6 +20,9 @@ namespace SocialMediaApp.Controllers
 
         public IActionResult Index()
         {
+           
+            throw new NullReferenceException();
+            
             return View();
         }
 
@@ -31,7 +34,9 @@ namespace SocialMediaApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            _logger.LogError("tolu", "tosin");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            
         }
     }
 }
